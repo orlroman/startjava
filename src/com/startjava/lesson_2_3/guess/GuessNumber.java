@@ -7,7 +7,6 @@ public class GuessNumber {
     private Player playerTwo;
     private Scanner scanner = new Scanner(System.in);
     private boolean isGuess;
-    private boolean isStop;
 
     public GuessNumber(Player playerOne, Player playerTwo) {
         this.playerOne = playerOne;
@@ -35,7 +34,7 @@ public class GuessNumber {
             }
     }
 
-    public boolean playerTurn(int number, Player player) {
+    public void playerTurn(int number, Player player) {
         if (number < 0 || number > 100) {
             System.out.print("Число не в диапазоне 0 - 100, " + player.getName() +  " попробуйте еще раз: ");
             playerTurn(scanner.nextInt(), player);
@@ -51,7 +50,6 @@ public class GuessNumber {
             }
             isGuess = false;
         }
-        return isGuess;
     }
 
     // public int getGuessNumber() {
