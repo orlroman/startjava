@@ -3,94 +3,105 @@ package com.startjava.graduation.bookshelf;
 import java.util.Scanner;
 
 public class BookshelfTest {
+    private static final int EXIT = 5;
+    private static final String MESSAGE_TITLE = "Введите название книги: ";
     public static Bookshelf bookshelf = new Bookshelf();
     public static Scanner scanner = new Scanner(System.in);
-    public static boolean isStop = false;
 
     public static void main(String[] args) {
         do {
-            try {
-                menu();
-                System.out.println("Для продолжения нажмите Enter");
-                scanner.nextLine();
-            } catch (RuntimeException e) {
-                System.out.println(e.getMessage());
-            }
-        } while (!isStop);
-
+                printBookshelf();
+                printMenu();
+        } while (selectMenuItem() != EXIT);
     }
 
-    public static void menu() {
-        if (bookshelf.getBookQuantity() == 0) {
-            System.out.println("Шкаф пуст. Вы можете добавить в него первую книгу");
+    private static void printBookshelf() {
+        if (bookshelf.getCountBooks() == 0) {
+            System.out.println("\nШкаф пуст. Вы можете добавить в него первую книгу.");
         } else {
-            System.out.println("В шкафу книг - " + bookshelf.getBookQuantity() +
-                    ", cвободно полок - " + bookshelf.getFreeShelf() + "\n");
-            bookshelf.getBookshelf();
-        }
+            System.out.println("\nВ шкафу книг - " + bookshelf.getCountBooks() +
+                    ", свободно полок - " + bookshelf.getFreeShelves());
 
-        System.out.print("""
-                
+            Book[] books = bookshelf.getBooks();
+            int maxLengthShelves = bookshelf.getLengthShelves();
+
+            for (Book book : books) {
+                System.out.println("|" + book.toString() + " ".repeat(maxLengthShelves - book.getLength()) + "|");
+                System.out.println("|" + "-".repeat(maxLengthShelves) + "|");
+            }
+
+            System.out.println("|" + " ".repeat(maxLengthShelves) + "|\n");
+        }
+    }
+    private static void printMenu() {
+        System.out.println("""
                 1. Добавить книгу
                 2. Найти книгу
                 3. Удалить книгу
                 4. Очистить шкаф
                 5. Выйти
-                
                 """);
-        System.out.print("Введите номер операции: ");
-        String choose = scanner.nextLine();
-
-        event(choose);
     }
 
-    public static void event(String choose) {
-        switch (choose) {
-            case "1":
-                if (bookshelf.getBookQuantity() == 10) {
-                    System.out.println("Нет места!");
-                } else {
-                    System.out.print("Введите автора: ");
-                    String addAuthor = scanner.nextLine();
+    private static int selectMenuItem() {
+        String item = scanner.nextLine();
+        switch (item) {
+            case "1" -> addBook();
+            case "2" -> findBook();
+            case "3" -> deleteBook();
+            case "4" -> clearShelves();
+            case "5" -> {
+                return EXIT;
+            }
+            default -> throw new RuntimeException("Ошибка. Введите номер из списка.");
+        }
+        pressEnter();
+        return 0;
+    }
 
-                    System.out.print("Введите название книги: ");
-                    String addTitle = scanner.nextLine();
+    private static void addBook() {
+        String author = input("Введите автора: ");
+        String title = input(MESSAGE_TITLE);
+        System.out.print("Введите год издания: ");
+        try {
+            int yearPublication = scanner.nextInt();
+            scanner.nextLine();
 
-                    System.out.print("Введите год публикации: ");
-                    String yearToString = scanner.nextLine();
-                    try {
-                        int addYearPublication = Integer.parseInt(yearToString);
-                        bookshelf.add(addAuthor, addTitle, addYearPublication);
-                    } catch (RuntimeException e) {
-                        throw new RuntimeException("Некорректный ввод даты публикации!\n");
-                    }
-                }
-                break;
-
-            case "2":
-                System.out.print("Введите название книги, чтобы найти: ");
-                String findTitle = scanner.nextLine();
-                System.out.println(bookshelf.find(findTitle));
-                break;
-
-            case "3":
-                System.out.print("Введите название книги, чтобы удалить: ");
-                String deleteTitle = scanner.nextLine();
-                if (!bookshelf.delete(deleteTitle)) {
-                    System.out.println("Такой книги нет!");
-                }
-                break;
-
-            case "4":
-                bookshelf.clear();
-                break;
-
-            case "5":
-                isStop = true;
-                break;
-
-            default:
-                throw new RuntimeException("Такой операции нет\n");
+            Book book = new Book(author, title, yearPublication);
+            String message = bookshelf.add(book) ? book + " - добавлена на полку" : "Нет места!";
+            System.out.println(message);
+        } catch (RuntimeException e) {
+            System.out.println("Некорректный год издания");
+            scanner.nextLine();
+            addBook();
         }
     }
+
+    private static void findBook() {
+        Book book = bookshelf.find(input(MESSAGE_TITLE));
+        System.out.println(book != null ? book : "Книга не найдена!");
+    }
+
+    private static void deleteBook() {
+        String message =  bookshelf.delete(input(MESSAGE_TITLE)) ? "Книга удалена" : "Книга не найдена!";
+        System.out.println(message);
+    }
+
+    private static void clearShelves() {
+        bookshelf.clear();
+        System.out.println("Шкаф очищен");
+    }
+
+    private static String input(String message) {
+        System.out.print(message);
+        return scanner.nextLine();
+    }
+    private static void pressEnter() {
+        String key;
+        do {
+            key = input("Для продолжения нажмите <Enter>");
+        } while (!key.isEmpty());
+    }
+
+
 }

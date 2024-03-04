@@ -1,23 +1,20 @@
 package com.startjava.graduation.bookshelf;
 
 public class Book {
-    private String author;
-    private String title;
-    private int yearPublication;
+    private final String author;
+    private final String title;
+    private final int yearPublication;
+    private final int lengthBook;
 
     public Book(String author, String title, int yearPublication) {
         this.author = author;
         this.title = title;
         this.yearPublication = yearPublication;
+        lengthBook = toString().length();
     }
 
-    public int getLengthBookInformation() {
-        int lengthBookInformation = 0;
-        String[] bookInformation = {author, title, Integer.toString(yearPublication)};
-        for (String str : bookInformation) {
-            lengthBookInformation += str.length();
-        }
-        return lengthBookInformation + 4;
+    public int getLength() {
+        return lengthBook;
     }
 
     public String getTitle() {
