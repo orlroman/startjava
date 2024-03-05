@@ -23,9 +23,8 @@ public class Bookshelf {
     public Book[] getBooks() {
         return Arrays.copyOf(books, countBooks);
     }
-    private void maxLengthShelves(int length) {
+    private void updateLengthShelves(int length) {
         if (countBooks > 0) {
-            lengthShelves = Math.max(lengthShelves, length);
             if (lengthShelves == length) {
                 lengthShelves = books[0].getLength();
                 for (int i = 1; i < countBooks; i++) {
@@ -40,7 +39,7 @@ public class Bookshelf {
     public boolean add(Book book) {
         if (countBooks < books.length) {
             books[countBooks++] = book;
-            maxLengthShelves(book.getLength());
+            lengthShelves = Math.max(lengthShelves, book.getLength());
             return true;
         }
         return false;
@@ -58,11 +57,13 @@ public class Bookshelf {
     public boolean delete(String title) {
         for (int i = 0; i < countBooks; i++) {
             if (books[i].getTitle().equals(title)) {
+                int length = books[i].getLength();
                 if (countBooks > 1 && i < countBooks - 1) {
                     System.arraycopy(books, i + 1, books, i, (countBooks - 1) - i);
                 }
                 countBooks--;
                 books[countBooks] = null;
+                updateLengthShelves(length);
                 return true;
             }
         }
