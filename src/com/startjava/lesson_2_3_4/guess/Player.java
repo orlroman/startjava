@@ -3,9 +3,9 @@ package com.startjava.lesson_2_3_4.guess;
 import java.util.Arrays;
 
 public class Player {
-    private String name;
+    private final String name;
     private int playerAttempt;
-    private int[] playerNumbers;
+    private final int[] playerNumbers;
 
     public Player(String name) {
         this.name = name;
@@ -19,10 +19,8 @@ public class Player {
         if (playerAttempt == 0) {
             System.out.print("-");
         }
-        for (int i = 0; i < playerNumbers.length; i++) {
-            if (i < playerAttempt) {
+        for (int i = 0; i < playerAttempt; i++) {
                 System.out.print(playerNumbers[i] + " ");
-            }
         }
     }
     public int getPlayerAttempt() {
