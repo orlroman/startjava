@@ -71,7 +71,7 @@ public class Bookshelf {
     }
 
     public void clear() {
-        Arrays.fill(books, 0, books.length - 1, null);
+        Arrays.fill(books, 0, countBooks, null);
         countBooks = 0;
     }
 
